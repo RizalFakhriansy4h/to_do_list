@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title has-text-centered">To-Do List</h1>
+            <form id="taskForm" class="mb-4" autocomplete="off">
+                <div class="field">
+                    <label class="label">Judul Tugas</label>
+                    <div class="control">
+                        <input class="input" type="text" id="taskTitle" placeholder="Judul tugas" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Deskripsi Tugas</label>
+                    <div class="control">
+                        <textarea class="textarea" id="taskDescription" placeholder="Deskripsi tugas" required></textarea>
+                    </div>
+                </div>
+                <div class="field is-grouped mt-3">
+                    <div class="control">
+                        <button class="button is-link">Tambah Tugas</button>
+                    </div>
+                </div>
+            </form>
+            <div class="columns is-centered">
+                <div class="column is-half">
+                    <table class="table is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th>Nama Tugas</th>
+                                <th>Deskripsi Tugas</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taskList">
+                        </tbody>
+                    </table>
+                    <p id="taskCount" class="has-text-centered">Jumlah Tugas: <span id="taskCounter">0</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const taskForm = document.getElementById('taskForm');
+            const taskList = document.getElementById('taskList');
+            const taskCounter = document.getElementById('taskCounter');
+
+            taskForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const taskTitleInput = document.getElementById('taskTitle');
+                const taskDescriptionInput = document.getElementById('taskDescription');
+
+                const taskTitle = taskTitleInput.value.trim();
+                const taskDescription = taskDescriptionInput.value.trim();
+
+                if (taskTitle === '' || taskDescription === '') {
+                    alert('Judul dan deskripsi tugas harus diisi!');
+                    return;
+                }
+
+                const taskItem = createTaskItem(taskTitle, taskDescription);
+                taskList.appendChild(taskItem);
+
+                taskTitleInput.value = '';
+                taskDescriptionInput.value = '';
+
+                updateTaskCount();
+            });
+
+            function createTaskItem(title, description) {
+                const tr = document.createElement('tr');
+                
+                const taskContent = `
+                    <td><strong>${title}</strong></td>
+                    <td>${description}</td>
+                    <td>
+                        <button class="button is-success is-small">Selesai</button>
+                    </td>
+                `;
+
+                tr.innerHTML = taskContent;
+
+                const deleteButton = tr.querySelector('button');
+                deleteButton.addEventListener('click', function () {
+                    tr.remove();
+                    updateTaskCount();
+                });
+
+                return tr;
+            }
+
+            function updateTaskCount() {
+                const count = taskList.getElementsByTagName('tr').length;
+                taskCounter.textContent = count;
+            }
+        });
+    </script>
+</body>
+</html>
